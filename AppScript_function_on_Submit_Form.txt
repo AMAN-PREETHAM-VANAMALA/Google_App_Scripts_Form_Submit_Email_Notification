@@ -1,0 +1,30 @@
+function onSubmitForm() {
+  var form = FormApp.openById('1DXXqoZ5iubsqpAPYoihvxIay-Md8m9ipj-UQ9gxMSjw'); // Getting the form using form ID
+  var formResponses = form.getResponses();
+  var formTitle = form.getTitle();
+  var latestResponse = formResponses[formResponses.length-1];
+  var itemResponses = latestResponse.getItemResponses();
+
+  record_array = []; // Array that stores question and answer in a formatted manner
+  record_question_array = []; // Array that stores questions
+  record_answer_array = []; // Array that stores responses
+  
+  for (var i = 0; i < itemResponses.length; i++) {
+    var itemResponse = itemResponses[i];
+    var question = itemResponse.getItem().getTitle(); // getting the question
+    var answer = itemResponse.getResponse(); // getting the response
+    record_question_array.push(question);
+    record_answer_array.push(answer);
+    record_array.push(question + " - " + answer + "\n") // formatting question and response
+  
+  }
+  var emailBody;
+  emailBody = "Hi " + record_answer_array[0] + ",\n\n"; // Name response is used
+  emailBody += "This is what we received.\n\n";
+  for (var i = 0; i < record_array.length; i++) {
+    emailBody += record_array[i];
+  } // emailBody is the summary of the questions and responses received
+  MailApp.sendEmail(record_answer_array[2], // Response for email address
+                    "Response - " + formTitle, // Subject
+                    emailBody);
+}
